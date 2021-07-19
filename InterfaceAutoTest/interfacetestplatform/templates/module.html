@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}模块{% endblock %}
+
+{% block content %}
+<form action="{% url 'module'%}" method="POST">
+    {% csrf_token %}
+    <input style="margin-left: 5px;" type="text" name="proj_name" value="{{ proj_name }}" placeholder="输入项目名称搜索模块">
+    <input type="submit" value="搜索">
+</form>
+
+<div class="table-responsive">
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>模块名称</th>
+            <th>所属项目</th>
+            <th>测试负责人</th>
+            <th>模块描述</th>
+            <th>创建时间</th>
+            <th>更新时间</th>
+            <th>测试结果统计</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for module in modules %}
+        <tr>
+            <td>{{ module.id }}</td>
+            <td><a href="{% url 'module_test_cases' module.id %}">{{ module.name }}</a></td>
+            <td>{{ module.belong_project.name }}</td>
+            <td>{{ module.test_owner }}</td>
+            <td>{{ module.desc }}</td>
+            <td>{{ module.create_time|date:"Y-n-d H:i" }}</td>
+            <td>{{ module.update_time|date:"Y-n-d H:i" }}</td>
+            <td><a href="{% url 'module_statistics' module.id %}">查看</a></td>
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+{# 实现分页标签的代码 #}
+{# 这里使用 bootstrap 渲染页面 #}
+<div id="pages" class="text-center">
+    <nav>
+        <ul class="pagination">
+            <li class="step-links">
+                {% if modules.has_previous %}
+                <a class='active' href="?page={{ modules.previous_page_number }}">上一页</a>
+                {% endif %}
+
+                <span class="current">
+                    第 {{ modules.number }} 页 / 共 {{ modules.paginator.num_pages }} 页</span>
+
+                {% if modules.has_next %}
+                <a class='active' href="?page={{ modules.next_page_number }}">下一页</a>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
+</div>
+{% endblock %}

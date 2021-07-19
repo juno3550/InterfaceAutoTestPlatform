@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}用例集合{% endblock %}
+{% block content %}
+<script>
+    //页面加载的时候,所有的复选框都是未选中的状态
+    function checkOrCancelAll() {
+        var all_check = document.getElementById("all_check");  // 1.获取all的元素对象
+        var all_check = all_check.checked;  // 2.获取选中状态
+        // 3.若checked=true,将所有的复选框选中,checked=false,将所有的复选框取消
+        var allCheck = document.getElementsByName("case_suite_list");
+        // 4.循环遍历取出每一个复选框中的元素
+        if (all_check)//全选
+        {
+            for (var i = 0; i < allCheck.length; i++) {
+                //设置复选框的选中状态
+                allCheck[i].checked = true;
+            }
+        } else//取消全选
+        {
+            for (var i = 0; i < allCheck.length; i++) {
+                allCheck[i].checked = false;
+            }
+        }
+    }
+    function ischecked() {
+        // 3.若checked=true,将所有的复选框选中,checked=false,将所有的复选框取消
+        var allCheck = document.getElementsByName("case_suite_list");
+        for (var i = 0; i < allCheck.length; i++) {
+
+            if (allCheck[i].checked == true) {
+                alert("所需执行的测试集合提交成功！");
+                return true
+            }
+        }
+        alert("请选择要执行的测试集合！")
+        return false
+    }
+</script>
+
+<form action="" method="POST">
+    {% csrf_token %}
+    <span style="margin-left: 5px;">延迟执行的时间（单位：秒）:</span>
+    <input type="text" style="width: 70px; margin-left: 5px; margin-right: 10px;" placeholder="请输入" name="delay_time"/>
+    <span style="margin-left: 5px;">运行环境：</span>
+    <select name="env">
+        <option selected value="dev">dev</option>
+        <option value="prod">prod</option>
+    </select>
+    <input style="margin-left: 10px;" type="submit" id="all_check1" value='运行测试集合' onclick="return ischecked()"/>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th><input type="checkbox" id="all_check" onclick="checkOrCancelAll();"/>全选</th>
+                <th>id</th>
+                <th>测试集合名称</th>
+                <th>创建者</th>
+                <th>创建时间</th>
+                <th>查看/删除测试用例</th>
+                <th>添加测试用例</th>
+                <th>用例集合执行结果</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for case_suite in case_suites %}
+            <tr>
+                <td><input type="checkbox" value="{{ case_suite.id }}" name="case_suite_list"></td>
+                <td>{{ case_suite.id }}</td>
+                <td>{{ case_suite.suite_desc }}</td>
+                <td>{{ case_suite.creator }}</td>
+                <td>{{ case_suite.create_time|date:"Y-n-d H:i" }}</td>
+                <td><a href="{% url 'show_and_delete_case_in_suite' case_suite.id %}">查看/删除测试用例</a></td>
+                <td><a href="{% url 'add_case_in_suite' case_suite.id %}">添加测试用例</a></td>
+                <td><a href="{% url 'case_suite_statistics' case_suite.id %}">查看用例集合执行结果</a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</form>
+
+{# 实现分页标签的代码 #}
+{# 这里使用 bootstrap 渲染页面 #}
+<div id="pages" class="text-center">
+    <nav>
+        <ul class="pagination">
+            <li class="step-links">
+                {% if case_suites.has_previous %}
+                <a class='active' href="?page={{ case_suites.previous_page_number }}">上一页</a>
+                {% endif %}
+
+                <span class="current">
+                    第 {{ case_suites.number }} 页 / 共 {{ case_suites.paginator.num_pages }} 页</span>
+
+                {% if case_suites.has_next %}
+                <a class='active' href="?page={{ case_suites.next_page_number }}">下一页</a>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
+</div>
+{% endblock %}

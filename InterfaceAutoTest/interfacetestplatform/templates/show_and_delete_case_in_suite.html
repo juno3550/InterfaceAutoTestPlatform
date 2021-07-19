@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}查看/删除测试用例{% endblock %}
+{% block content %}
+
+<script type="text/javascript">
+    //页面加载的时候,所有的复选框都是未选中的状态
+    function checkOrCancelAll() {
+        var all_check = document.getElementById("all_check");//1.获取all的元素对象
+        var all_check = all_check.checked;//2.获取选中状态
+        var allCheck = document.getElementsByName("test_cases_list");//3.若checked=true,将所有的复选框选中,checked=false,将所有的复选框取消
+        //4.循环遍历取出每一个复选框中的元素
+        if (all_check)//全选
+        {
+
+            for (var i = 0; i < allCheck.length; i++) {
+                //设置复选框的选中状态
+                allCheck[i].checked = true;
+            }
+
+        } else//取消全选
+        {
+            for (var i = 0; i < allCheck.length; i++) {
+                allCheck[i].checked = false;
+            }
+        }
+    }
+
+    function ischecked() {
+
+        var allCheck = document.getElementsByName("test_cases_list");//3.若checked=true,将所有的复选框选中,checked=false,将所有的复选框取消
+        for (var i = 0; i < allCheck.length; i++) {
+
+            if (allCheck[i].checked == true) {
+                alert("所选用例删除成功！");
+                return true
+            }
+        }
+        alert("请选择要删除的测试用例！")
+        return false
+    }
+
+
+</script>
+
+<div><p style="margin-left: 5px;">测试集合名称：<b>{{case_suite.suite_desc}}</b></p>
+    <div>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input style="margin-left: 5px;" type="submit" id="all_check1" value='删除测试集合用例' onclick="return ischecked()"/>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th width="4%"><input type="checkbox" id="all_check" onclick="checkOrCancelAll();"/>全选</th>
+                        <th width="6%">用例id</th>
+                        <th>用例名称</th>
+                        <th>所属项目</th>
+                        <th>所属模块</th>
+                        <th>编写人员</th>
+                        <th>创建时间</th>
+                        <th>更新时间</th>
+                        <th>创建用例用户名</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for test_case in test_cases %}
+                    <tr>
+                        <td><input type="checkbox" value="{{ test_case.test_case.id }}" name="test_cases_list"></td>
+                        <td>{{ test_case.test_case.id }}</td>
+                        <td><a href="{% url 'test_case_detail' test_case.test_case.id%}">{{ test_case.test_case.case_name }}</a></td>
+                        <td>{{ test_case.test_case.belong_project.name }}</td>
+                        <td>{{ test_case.test_case.belong_module.name }}</td>
+                        <td>{{ test_case.test_case.maintainer }}</td>
+                        <td>{{ test_case.test_case.created_time|date:"Y-n-d H:i" }}</td>
+                        <td>{{ test_case.test_case.updated_time|date:"Y-n-d H:i" }}</td>
+                        <td>{{ test_case.test_case.user.username }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
+
+        {# 实现分页标签的代码 #}
+        {# 这里使用 bootstrap 渲染页面 #}
+        <div id="pages" class="text-center">
+            <nav>
+                <ul class="pagination">
+                    <li class="step-links">
+                        {% if test_cases.has_previous %}
+                        <a class='active' href="?page={{ test_cases.previous_page_number }}">上一页</a>
+                        {% endif %}
+
+                        <span class="current">
+                    第 {{ test_cases.number }} 页 / 共 {{ test_cases.paginator.num_pages }} 页</span>
+
+                        {% if test_cases.has_next %}
+                        <a class='active' href="?page={{ test_cases.next_page_number }}">下一页</a>
+                        {% endif %}
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}

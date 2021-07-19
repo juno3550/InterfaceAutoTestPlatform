@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}结果对比差异{% endblock %}
+
+{% block content %}
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th width="50%">上次执行结果</th>
+                  <th width="50%">本次执行结果</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div>
+                                <pre style="height: 400px;">{{ last_time_execute_response | safe }}</pre>
+                            </div>
+                        </td>
+                        <td>
+                            <div><pre style="height: 400px;">{{ present_response | safe }}</pre></div>
+                        </td>
+                     </tr>
+                </tbody>
+            </table>
+
+{% endblock %}

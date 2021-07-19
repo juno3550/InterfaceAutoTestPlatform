@@ -1,0 +1,58 @@
+.btn {
+	width: 200px;
+	height: 50px;
+	font-size: 20px;
+	color: white;
+	background-color: #006DCC;
+	border: 0px;
+	border-radius: 10px
+}
+.btn:hover {
+	box-shadow: 0 0 5px 5px darkgray;
+}
+
+.dialog {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.4);
+}
+
+.content {
+	width: 500px;
+	height: 300px;
+	margin: 100px auto;
+	background-color: #fefefe;
+	border-radius: 10px;
+	box-shadow: 0 0 5px 5px darkgray;
+}
+.aclose{
+	width: 500px;
+	height: 60px;
+	text-align: center;
+}
+.aclose span{
+	line-height: 70px;
+	font-size: 26px;
+	font-weight: 700;
+}
+.contain{
+	width: 500px;
+	height: 230px;
+	font-size: 20px;
+	margin-top: 10px;
+	text-align: center;
+}
+
+.close {
+	color: #aaa;
+	float: right;
+	margin-right: 15px;
+	font-size: 40px;
+	font-weight: bold;
+	text-decoration: none;
+}

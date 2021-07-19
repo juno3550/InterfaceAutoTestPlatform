@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}用例集合单次执行结果统计{% endblock %}
+{% block content %}
+
+
+<body>
+<p style="margin-left: 10px;">
+    <span style="margin-left: 5px;">用例集合执行结果统计：成功 {{ success_num }} 次，失败 {{ fail_num }} 次</span>
+<p>
+<div id="main" style="width: 600px;height:400px; margin-left: 10px;"></div>
+<!--<script src="{% static 'js/echarts.simple.min.js' %}"></script>-->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script>
+        // 绘制图表。
+        echarts.init(document.getElementById('main')).setOption({
+            series: {
+                type: 'pie',
+                color: ['green', 'red'],
+                data: [
+                    {name: '通过用例数', value: {{ success_num }}},
+                    {name: '失败用例数', value: {{ fail_num }}},
+                ]
+            }
+        });
+        echarts.init(document.getElementById('main')).setOption({
+            title: {
+                text: '结果统计',
+                subtext: '即时数据',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+            legend: {
+               orient: 'vertical',
+               left: 'left'
+            },
+            series: {
+                name: '结果统计',
+                radius: '55%',
+                type: 'pie',
+                color: ['green', 'red'],
+                data: [
+                    {name: '通过用例数', value: {{ success_num }}},
+                    {name: '失败用例数', value: {{ fail_num }}},
+
+                ],
+                 label:{  // 饼图图形上的文本标签
+                        normal:{
+                            show:true,
+                            formatter: "{b} : {c} ({d}%)"
+                        }
+                 }
+            }
+        });
+</script>
+
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>测试集合名称</th>
+                        <th width="6%">用例id</th>
+                        <th>用例名称</th>
+                        <th>所属项目</th>
+                        <th>所属模块</th>
+                        <th>编写人员</th>
+                        <th>创建时间</th>
+                        <th>更新时间</th>
+                        <th>创建用例用户名</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for suite_case in suite_case_records %}
+                    <tr>
+                        <td>{{suite_case.case_suite_record.case_suite.suite_desc}}</td>
+                        <td>{{ suite_case.id }}</td>
+                        <td><a href="{% url 'test_case_detail' suite_case.id%}">{{ suite_case.test_case.case_name }}</a></td>
+                        <td>{{ suite_case.test_case.belong_project.name }}</td>
+                        <td>{{ suite_case.test_case.belong_module.name }}</td>
+                        <td>{{ suite_case.test_case.maintainer }}</td>
+                        <td>{{ suite_case.test_case.created_time|date:"Y-n-d H:i" }}</td>
+                        <td>{{ suite_case.test_case.updated_time|date:"Y-n-d H:i" }}</td>
+                        <td>{{ suite_case.test_case.user }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
+
+        {# 实现分页标签的代码 #}
+        {# 这里使用 bootstrap 渲染页面 #}
+        <div id="pages" class="text-center">
+            <nav>
+                <ul class="pagination">
+                    <li class="step-links">
+                        {% if suite_case_records.has_previous %}
+                        <a class='active' href="?page={{ suite_case_records.previous_page_number }}">上一页</a>
+                        {% endif %}
+
+                        <span class="current">
+                    第 {{ suite_case_records.number }} 页 / 共 {{ suite_case_records.paginator.num_pages }} 页</span>
+
+                        {% if suite_case_records.has_next %}
+                        <a class='active' href="?page={{ suite_case_records.next_page_number }}">下一页</a>
+                        {% endif %}
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+</body>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}用例详情{% endblock %}
+
+{% block content %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th width="3%">id</th>
+            <th width="4%">接口名称</th>
+            <th width="6%">所属项目</th>
+            <th width="6%">所属模块</th>
+            <th width="6%">接口地址</th>
+            <th width="10%">请求数据</th>
+            <th width="8%">断言内容</th>
+            <th width="4%">编写人员</th>
+            <th width="8%">提取变量表达式</th>
+            <th width="4%">维护人</th>
+            <th width="4%">创建人</th>
+            <th width="6%">创建时间</th>
+            <th width="6%">更新时间</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>{{ test_case.id }}</td>
+            <td>{{ test_case.case_name }}</td>
+            <td>{{ test_case.belong_project }}</td>
+            <td>{{ test_case.belong_module }}</td>
+            <td>{{ test_case.uri }}</td>
+            <td>{{ test_case.request_data }}</td>
+            <td>{{ test_case.assert_key }}</td>
+            <td>{{ test_case.maintainer }}</td>
+            <td>{{ test_case.extract_var }}</td>
+            <td>{{ test_case.maintainer }}</td>
+            <td>{{ test_case.user.username }}</td>
+            <td>{{ test_case.created_time|date:"Y-n-d H:i" }}</td>
+            <td>{{ test_case.updated_time|date:"Y-n-d H:i" }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

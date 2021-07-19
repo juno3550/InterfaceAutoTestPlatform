@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}主页{% endblock %}
+
+{% block content %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>项目名称</th>
+            <th>项目负责人</th>
+            <th>测试负责人</th>
+            <th>开发负责人</th>
+            <th>简要描述</th>
+            <th>创建时间</th>
+            <th>更新时间</th>
+            <th>测试结果统计</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for project in projects %}
+        <tr>
+            <td>{{ project.id }}</td>
+            <td>{{ project.name }}</td>
+            <td>{{ project.proj_owner }}</td>
+            <td>{{ project.test_owner }}</td>
+            <td>{{ project.dev_owner }}</td>
+            <td>{{ project.desc }}</td>
+            <td>{{ project.create_time|date:"Y-n-d H:i" }}</td>
+            <td>{{ project.update_time|date:"Y-n-d H:i" }}</td>
+            <td><a href="{% url 'project_statistics' project.id %}"> 查看</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{# 实现分页标签的代码 #}
+{# 这里使用 bootstrap 渲染页面 #}
+<div id="pages" class="text-center">
+    <nav>
+        <ul class="pagination">
+            <li class="step-links">
+                {% if projects.has_previous %}
+                <a class='active' href="?page={{ projects.previous_page_number }}">上一页</a>
+                {% endif %}
+
+                <span class="current">
+                        第 {{ projects.number }} 页 / 共 {{ projects.paginator.num_pages }} 页</span>
+
+                {% if projects.has_next %}
+                <a class='active' href="?page={{ projects.next_page_number }}">下一页</a>
+                {% endif %}
+            </li>
+        </ul>
+    </nav>
+</div>
+{% endblock %}

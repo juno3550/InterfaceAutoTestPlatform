@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}异常信息{% endblock %}
+{% block content %}
+
+<p style="margin-left: 10px;">异常信息如下：</p>
+<p style="margin-left: 10px; width: 90%">{{ exception_info|default_if_none:"" }}</p>
+
+{% endblock %}
